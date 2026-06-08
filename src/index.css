@@ -29,7 +29,7 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
 
 /* ─── STATE PANEL ─────────────────────────────────────────── */
 .state-panel {
-  width: 240px; flex-shrink: 0;
+  width: 200px; flex-shrink: 0;
   background: var(--bg-secondary); border-right: 1px solid var(--border);
   display: flex; flex-direction: column; overflow: hidden;
 }
@@ -78,12 +78,13 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
 }
 
 .sp-row {
-  padding: 7px 10px; cursor: pointer;
+  padding: 5px 8px; cursor: pointer;
   border-bottom: 1px solid rgba(255,255,255,0.03);
   transition: background .12s;
 }
 .sp-row:hover { background: rgba(255,255,255,0.04); }
 .sp-row-active { background: rgba(59,130,246,0.1) !important; border-left: 2px solid var(--accent); }
+.sp-row-dim { opacity: 0.4; }
 
 .sp-row-top { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 5px; }
 .sp-rank { font-size: 9px; color: var(--text-muted); width: 18px; flex-shrink: 0; padding-top: 1px; }

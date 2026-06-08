@@ -88,7 +88,7 @@ export default function App() {
       />
 
       <div className="main-area">
-        <StatePanel activeState={activeState} onSelectState={setActiveState} />
+        <StatePanel activeState={activeState} onSelectState={setActiveState} filtered={filtered} hasActiveFilters={hasActiveFilters} />
         <div className="treemap-area">
           <TreemapChart
             occupations={filtered}
