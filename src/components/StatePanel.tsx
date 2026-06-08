@@ -7,6 +7,7 @@ interface Props {
   onSelectState: (s: StateData | null) => void;
   filtered: OccupationData[];
   hasActiveFilters: boolean;
+  totalWorkforce: number;
 }
 
 type SortKey = 'high_risk_pct' | 'high_risk_million' | 'direct_tax_million' | 'workforce_million';
@@ -18,8 +19,8 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'workforce_million',  label: 'Total Workforce' },
 ];
 
-export default function StatePanel({ activeState, onSelectState, filtered, hasActiveFilters }: Props) {
-  const [sortKey, setSortKey] = useState<SortKey>('high_risk_pct');
+export default function StatePanel({ activeState, onSelectState, filtered, hasActiveFilters, totalWorkforce }: Props) {
+  const [sortKey, setSortKey] = useState<SortKey>('workforce_million');
 
   // When filters active: compute what % of filtered occupations overlap with each state's dominant divisions
   // This shows "relevance" without double-counting workforce
@@ -62,7 +63,7 @@ export default function StatePanel({ activeState, onSelectState, filtered, hasAc
       <div className="sp-national">
         <div className="sp-nat-row">
           <span className="sp-nat-label">🇮🇳 All India</span>
-          <span className="sp-nat-val">{nationalTotal.toFixed(0)}M workers</span>
+          <span className="sp-nat-val">{totalWorkforce.toFixed(0)}M workers</span>
         </div>
         <div className="sp-risk-bar" style={{ marginBottom: 3 }}>
           <div className="sp-risk-seg sp-seg-high"   style={{ width: '6.1%' }} title="High: 37.8M" />
@@ -135,7 +136,7 @@ export default function StatePanel({ activeState, onSelectState, filtered, hasAc
       </div>
 
       <div className="sp-footer">
-        PLFS 2023-24 · 20 states · modelled ±30%
+        PLFS 2023-24 · 20 of 36 states/UTs · modelled ±30%
       </div>
     </div>
   );
