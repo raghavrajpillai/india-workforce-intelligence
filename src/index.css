@@ -71,6 +71,21 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
 
 /* KPI separator and percentage badge */
 .kpi-sep { width: 1px; height: 16px; background: var(--border); flex-shrink: 0; }
+
+/* Author chip */
+.author-chip {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(10,102,194,0.1); border: 1px solid rgba(10,102,194,0.25);
+  border-radius: 16px; padding: 3px 8px 3px 4px;
+  text-decoration: none; flex-shrink: 0;
+  transition: background .15s, border-color .15s;
+}
+.author-chip:hover { background: rgba(10,102,194,0.2); border-color: rgba(10,102,194,0.5); }
+.author-avatar {
+  width: 20px; height: 20px; border-radius: 50%;
+  object-fit: cover; flex-shrink: 0;
+}
+.author-name { font-size: 11px; font-weight: 600; color: #93c5fd; white-space: nowrap; }
 .kpi-pct {
   font-size: 9px; font-weight: 700; padding: 1px 4px;
   border-radius: 6px; background: rgba(255,255,255,0.06);
