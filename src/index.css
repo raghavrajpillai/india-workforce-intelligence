@@ -44,7 +44,7 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
 .header-kpis {
   display: flex; gap: 6px; flex-wrap: nowrap; overflow: hidden;
   flex: 1; align-items: center;
-  padding-right: 180px; /* reserve space for absolutely-positioned author chip */
+  padding-right: 220px; /* reserve space for absolutely-positioned author chip */
 }
 .kpi-chip {
   background: rgba(255,255,255,0.05);

@@ -68,7 +68,7 @@ export default function Header({ metadata, totalShown, highAiCount, fiscalSummar
             {hasActiveFilters && <span className="kpi-pct" style={{ color: '#94a3b8' }}>{nonPct}%</span>}
           </div>
 
-          <div className="kpi-chip" style={{ marginLeft: 'auto' }}>
+          <div className="kpi-chip">
             <span className="val" style={{ color: '#4ade80' }}>PLFS {metadata.plfs_year}</span>
             <span className="lbl">source</span>
           </div>
