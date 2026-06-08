@@ -69,16 +69,14 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
 .sp-title { font-size: 11px; font-weight: 700; color: var(--text-primary); }
 .sp-note { font-size: 9px; color: #92640c; background: rgba(234,179,8,0.1); border-radius: 8px; padding: 1px 6px; }
 
-.sp-sort {
-  padding: 5px 10px; display: flex; align-items: center; gap: 6px;
-  border-bottom: 1px solid var(--border); flex-shrink: 0;
+/* Section dividers in state list */
+.sp-section-label {
+  padding: 4px 10px; font-size: 9px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  position: sticky; top: 0; z-index: 1;
 }
-.sp-sort-label { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
-.sp-sort-select {
-  flex: 1; background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 4px; color: var(--text-primary); font-size: 10px;
-  padding: 3px 5px; outline: none; cursor: pointer;
-}
+.sp-section-impacted { background: rgba(59,130,246,0.12); color: #60a5fa; }
+.sp-section-not-impacted { background: rgba(100,116,139,0.1); color: var(--text-muted); }
 
 .sp-national {
   padding: 6px 10px; border-bottom: 1px solid var(--border);
