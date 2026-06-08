@@ -21,6 +21,7 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 
 export default function StatePanel({ activeState, onSelectState, filtered, hasActiveFilters, totalWorkforce }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>('workforce_million');
+  const [collapsed, setCollapsed] = useState(true);
 
   // When filters active: compute what % of filtered occupations overlap with each state's dominant divisions
   // This shows "relevance" without double-counting workforce
@@ -41,12 +42,27 @@ export default function StatePanel({ activeState, onSelectState, filtered, hasAc
   const nationalHigh  = STATES.reduce((s, st) => s + st.high_risk_million, 0);
   const nationalTax   = STATES.reduce((s, st) => s + st.direct_tax_million, 0);
 
+  if (collapsed) {
+    return (
+      <div className="state-panel state-panel-collapsed" onClick={() => setCollapsed(false)} title="Expand State Risk Ranking">
+        <div className="sp-collapsed-content">
+          <span className="sp-collapsed-label">STATE RISK</span>
+          {activeState && <span className="sp-collapsed-active">● {activeState.name}</span>}
+          <span className="sp-collapsed-arrow">›</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="state-panel">
       {/* Header */}
       <div className="sp-header">
         <span className="sp-title">State Risk Ranking</span>
-        <span className="sp-note">⚠ Est. ±30%</span>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <span className="sp-note">⚠ Est. ±30%</span>
+          <button className="sp-collapse-btn" onClick={() => setCollapsed(true)} title="Collapse panel">‹</button>
+        </div>
       </div>
 
       {/* Sort */}
