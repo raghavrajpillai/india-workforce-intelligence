@@ -14,9 +14,10 @@ interface Props {
   highAiCount: number;
   fiscalSummary: FiscalSummary;
   hasActiveFilters: boolean;
+  activeStateName?: string;
 }
 
-export default function Header({ metadata, totalShown, highAiCount, fiscalSummary, hasActiveFilters }: Props) {
+export default function Header({ metadata, totalShown, highAiCount, fiscalSummary, hasActiveFilters, activeStateName }: Props) {
   const { directTax, indirect, nonContrib, total } = fiscalSummary;
 
   const directPct = total > 0 ? Math.round((directTax / total) * 100) : 0;
@@ -38,7 +39,7 @@ export default function Header({ metadata, totalShown, highAiCount, fiscalSummar
               {formatWorkforce(totalShown)}
             </span>
             <span className="lbl">
-              {hasActiveFilters ? `showing (of ${formatWorkforce(metadata.total_workforce_million)})` : 'total workforce'}
+              {activeStateName ? `${activeStateName} workforce` : hasActiveFilters ? `showing (of ${formatWorkforce(metadata.total_workforce_million)})` : 'total workforce'}
             </span>
           </div>
           <div className="kpi-chip">

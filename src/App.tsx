@@ -1,10 +1,12 @@
 import { useState, useMemo, useCallback } from 'react';
 import rawData from './data/data.json';
 import { Dataset, OccupationData, MetricKey } from './types/occupation';
+import { StateData } from './data/statesData';
 import Header from './components/Header';
 import Controls from './components/Controls';
 import TreemapChart from './components/TreemapChart';
 import BottomBar from './components/BottomBar';
+import StatePanel from './components/StatePanel';
 
 const data = rawData as Dataset;
 
@@ -16,6 +18,7 @@ export default function App() {
   const [activeTax, setActiveTax] = useState<string[]>([]);
   const [formality, setFormality] = useState('all');
   const [minWorkforce, setMinWorkforce] = useState(0);
+  const [activeState, setActiveState] = useState<StateData | null>(null);
 
   const toggleDivision = useCallback((c: string) =>
     setActiveDivisions(p => p.includes(c) ? p.filter(x => x !== c) : [...p, c]), []);
@@ -32,9 +35,11 @@ export default function App() {
       if (formality === 'formal' && o.formal_share_pct < 50) return false;
       if (formality === 'informal' && o.formal_share_pct >= 50) return false;
       if (o.workforce_million < minWorkforce) return false;
+      // State filter: show occupations in state's dominant divisions
+      if (activeState && !activeState.dominant_divisions.includes(o.division_code)) return false;
       return true;
     }),
-    [activeDivisions, activeRisk, activeTax, formality, minWorkforce]
+    [activeDivisions, activeRisk, activeTax, formality, minWorkforce, activeState]
   );
 
   // Fiscal breakdown of currently filtered set
@@ -57,7 +62,8 @@ export default function App() {
     activeRisk.length > 0 ||
     activeTax.length > 0 ||
     formality !== 'all' ||
-    minWorkforce > 0;
+    minWorkforce > 0 ||
+    activeState !== null;
 
   return (
     <div className="app">
@@ -67,6 +73,7 @@ export default function App() {
         highAiCount={highAiCount}
         fiscalSummary={fiscalSummary}
         hasActiveFilters={hasActiveFilters}
+        activeStateName={activeState?.name}
       />
 
       <Controls
@@ -81,12 +88,15 @@ export default function App() {
       />
 
       <div className="main-area">
-        <TreemapChart
-          occupations={filtered}
-          allOccupations={data.occupations}
-          metric={metric}
-          search={search}
-        />
+        <StatePanel activeState={activeState} onSelectState={setActiveState} />
+        <div className="treemap-area">
+          <TreemapChart
+            occupations={filtered}
+            allOccupations={data.occupations}
+            metric={metric}
+            search={search}
+          />
+        </div>
       </div>
 
       <BottomBar
