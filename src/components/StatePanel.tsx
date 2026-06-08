@@ -9,42 +9,46 @@ interface Props {
   hasActiveFilters: boolean;
 }
 
-type SortKey = 'high_risk_pct' | 'filteredWorkforce' | 'filteredHighRisk' | 'filteredDirectTax';
+type SortKey = 'high_risk_pct' | 'high_risk_million' | 'direct_tax_million' | 'workforce_million';
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'high_risk_pct',      label: '% High Risk' },
-  { key: 'filteredWorkforce',  label: 'Filtered Workers' },
-  { key: 'filteredHighRisk',   label: 'High Risk (filtered)' },
-  { key: 'filteredDirectTax',  label: 'Direct Tax (filtered)' },
+  { key: 'high_risk_million',  label: 'High Risk Workers' },
+  { key: 'direct_tax_million', label: 'Direct Tax at Risk' },
+  { key: 'workforce_million',  label: 'Total Workforce' },
 ];
 
 export default function StatePanel({ activeState, onSelectState, filtered, hasActiveFilters }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>('high_risk_pct');
 
-  // Compute live metrics per state from filtered occupations
-  const stateMetrics = useMemo(() => {
-    return STATES.map(st => {
-      const stateOccs = filtered.filter(o => st.dominant_divisions.includes(o.division_code));
-      const filteredWorkforce = stateOccs.reduce((s, o) => s + o.workforce_million, 0);
-      const filteredHighRisk = stateOccs.filter(o => o.ai_risk_tier === 'high').reduce((s, o) => s + o.workforce_million, 0);
-      const filteredDirectTax = stateOccs.filter(o => o.tax_contributor_tier === 'direct_tax').reduce((s, o) => s + o.workforce_million, 0);
-      const filteredGST = stateOccs.filter(o => o.tax_contributor_tier === 'indirect_gst').reduce((s, o) => s + o.workforce_million, 0);
-      return { ...st, filteredWorkforce, filteredHighRisk, filteredDirectTax, filteredGST };
-    });
-  }, [filtered]);
+  // When filters active: compute what % of filtered occupations overlap with each state's dominant divisions
+  // This shows "relevance" without double-counting workforce
+  const relevanceMap = useMemo(() => {
+    if (!hasActiveFilters) return null;
+    const filteredDivisions = new Set(filtered.map(o => o.division_code));
+    const map: Record<string, number> = {};
+    for (const st of STATES) {
+      const overlap = st.dominant_divisions.filter(d => filteredDivisions.has(d)).length;
+      map[st.code] = overlap / st.dominant_divisions.length; // 0–1
+    }
+    return map;
+  }, [filtered, hasActiveFilters]);
 
-  const sorted = [...stateMetrics].sort((a, b) => b[sortKey] - a[sortKey]);
-  const totalFiltered = stateMetrics.reduce((s, st) => s + st.filteredWorkforce, 0);
+  const sorted = [...STATES].sort((a, b) => b[sortKey] - a[sortKey]);
+
+  const nationalTotal = STATES.reduce((s, st) => s + st.workforce_million, 0);
+  const nationalHigh  = STATES.reduce((s, st) => s + st.high_risk_million, 0);
+  const nationalTax   = STATES.reduce((s, st) => s + st.direct_tax_million, 0);
 
   return (
     <div className="state-panel">
-      {/* Panel header */}
+      {/* Header */}
       <div className="sp-header">
         <span className="sp-title">State Risk Ranking</span>
         <span className="sp-note">⚠ Est. ±30%</span>
       </div>
 
-      {/* Sort control */}
+      {/* Sort */}
       <div className="sp-sort">
         <span className="sp-sort-label">Sort:</span>
         <select className="sp-sort-select" value={sortKey} onChange={e => setSortKey(e.target.value as SortKey)}>
@@ -54,27 +58,27 @@ export default function StatePanel({ activeState, onSelectState, filtered, hasAc
         </select>
       </div>
 
-      {/* National reference */}
+      {/* All India reference row */}
       <div className="sp-national">
         <div className="sp-nat-row">
           <span className="sp-nat-label">🇮🇳 All India</span>
-          <span className="sp-nat-val" style={{ color: hasActiveFilters ? '#93c5fd' : undefined }}>
-            {totalFiltered.toFixed(1)}M {hasActiveFilters ? 'filtered' : 'total'}
-          </span>
+          <span className="sp-nat-val">{nationalTotal.toFixed(0)}M workers</span>
         </div>
-        <div className="sp-risk-bar">
-          <div className="sp-risk-seg sp-seg-high" style={{ width: '6.1%' }} />
-          <div className="sp-risk-seg sp-seg-medium" style={{ width: '17.4%' }} />
-          <div className="sp-risk-seg sp-seg-low" style={{ width: '76.5%' }} />
+        <div className="sp-risk-bar" style={{ marginBottom: 3 }}>
+          <div className="sp-risk-seg sp-seg-high"   style={{ width: '6.1%' }} title="High: 37.8M" />
+          <div className="sp-risk-seg sp-seg-medium" style={{ width: '17.4%' }} title="Medium: 108M" />
+          <div className="sp-risk-seg sp-seg-low"    style={{ width: '76.5%' }} title="Low: 476M" />
         </div>
         <div className="sp-bar-labels">
-          <span style={{ color: '#f87171' }}>6.1% high</span>
-          <span style={{ color: '#fbbf24' }}>17.4% med</span>
-          <span style={{ color: '#4ade80' }}>76.5% low</span>
+          <span style={{ color: '#f87171' }}>{nationalHigh.toFixed(0)}M high</span>
+          <span style={{ color: '#60a5fa' }}>{nationalTax.toFixed(0)}M tax</span>
         </div>
+        {hasActiveFilters && (
+          <div className="sp-filter-note">↑ State totals are pre-computed. Shading shows filter relevance.</div>
+        )}
       </div>
 
-      {/* Clear state button */}
+      {/* Clear button */}
       {activeState && (
         <button className="sp-clear" onClick={() => onSelectState(null)}>
           ✕ Clear: {activeState.name}
@@ -85,11 +89,16 @@ export default function StatePanel({ activeState, onSelectState, filtered, hasAc
       <div className="sp-list">
         {sorted.map((st, i) => {
           const isActive = activeState?.code === st.code;
-          const hasData = st.filteredWorkforce > 0;
+          const relevance = relevanceMap ? relevanceMap[st.code] : 1;
+          const dimmed = hasActiveFilters && relevance === 0;
+
           return (
             <div
               key={st.code}
-              className={`sp-row${isActive ? ' sp-row-active' : ''}${!hasData ? ' sp-row-dim' : ''}`}
+              className={`sp-row${isActive ? ' sp-row-active' : ''}${dimmed ? ' sp-row-dim' : ''}`}
+              style={hasActiveFilters && relevance > 0 && !isActive
+                ? { background: `rgba(59,130,246,${relevance * 0.08})` }
+                : undefined}
               onClick={() => onSelectState(isActive ? null : st)}
             >
               <div className="sp-row-top">
@@ -104,27 +113,21 @@ export default function StatePanel({ activeState, onSelectState, filtered, hasAc
               </div>
 
               <div className="sp-risk-bar">
-                <div className="sp-risk-seg sp-seg-high" style={{ width: `${st.high_risk_pct}%` }} />
+                <div className="sp-risk-seg sp-seg-high"   style={{ width: `${st.high_risk_pct}%` }} />
                 <div className="sp-risk-seg sp-seg-medium" style={{ width: `${st.medium_risk_pct}%` }} />
-                <div className="sp-risk-seg sp-seg-low" style={{ width: `${st.low_risk_pct}%` }} />
+                <div className="sp-risk-seg sp-seg-low"    style={{ width: `${st.low_risk_pct}%` }} />
               </div>
 
               <div className="sp-stats">
                 <span className="sp-stat">
-                  <span className="sp-stat-val" style={{ color: '#f87171' }}>
-                    {hasActiveFilters ? st.filteredHighRisk.toFixed(1) : st.high_risk_million.toFixed(1)}M
-                  </span>
+                  <span className="sp-stat-val" style={{ color: '#f87171' }}>{st.high_risk_million.toFixed(1)}M</span>
                   <span className="sp-stat-lbl"> high</span>
                 </span>
                 <span className="sp-stat">
-                  <span className="sp-stat-val" style={{ color: '#60a5fa' }}>
-                    {hasActiveFilters ? st.filteredDirectTax.toFixed(1) : st.direct_tax_million.toFixed(1)}M
-                  </span>
+                  <span className="sp-stat-val" style={{ color: '#60a5fa' }}>{st.direct_tax_million.toFixed(1)}M</span>
                   <span className="sp-stat-lbl"> tax</span>
                 </span>
-                <span className="sp-stat sp-total">
-                  {hasActiveFilters ? `${st.filteredWorkforce.toFixed(1)}M` : `${st.workforce_million.toFixed(0)}M`} total
-                </span>
+                <span className="sp-stat sp-total">{st.workforce_million.toFixed(0)}M</span>
               </div>
             </div>
           );

@@ -59,6 +59,7 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
 .sp-nat-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
 .sp-nat-label { font-size: 11px; font-weight: 600; color: var(--text-primary); }
 .sp-nat-val { font-size: 10px; color: var(--text-muted); }
+.sp-filter-note { font-size: 9px; color: #60a5fa; margin-top: 4px; font-style: italic; }
 .sp-bar-labels {
   display: flex; justify-content: space-between; margin-top: 3px;
   font-size: 9px;
