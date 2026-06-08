@@ -32,6 +32,7 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
   border-bottom: 1px solid var(--border);
   padding: 8px 20px 7px;
   flex-shrink: 0;
+  position: relative;
 }
 .header-row1 {
   display: flex; align-items: center; gap: 12px; flex-wrap: nowrap; overflow: hidden;
@@ -43,6 +44,7 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
 .header-kpis {
   display: flex; gap: 6px; flex-wrap: nowrap; overflow: hidden;
   flex: 1; align-items: center;
+  padding-right: 180px; /* reserve space for absolutely-positioned author chip */
 }
 .kpi-chip {
   background: rgba(255,255,255,0.05);
@@ -72,14 +74,15 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
 /* KPI separator and percentage badge */
 .kpi-sep { width: 1px; height: 16px; background: var(--border); flex-shrink: 0; }
 
-/* Author chip */
+/* Author chip — absolutely pinned top-right, never affects KPI layout */
 .author-chip {
+  position: absolute; top: 8px; right: 16px;
   display: flex; align-items: center; gap: 8px;
   background: rgba(10,102,194,0.1); border: 1px solid rgba(10,102,194,0.3);
   border-radius: 20px; padding: 4px 12px 4px 5px;
-  text-decoration: none; flex-shrink: 0;
+  text-decoration: none;
   transition: background .15s, border-color .15s, transform .15s;
-  margin-left: 12px;
+  z-index: 10;
 }
 .author-chip:hover {
   background: rgba(10,102,194,0.2); border-color: rgba(10,102,194,0.6);
