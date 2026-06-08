@@ -74,18 +74,27 @@ html, body, #root { height: 100%; width: 100%; background: var(--bg-primary); co
 
 /* Author chip */
 .author-chip {
-  display: flex; align-items: center; gap: 5px;
-  background: rgba(10,102,194,0.1); border: 1px solid rgba(10,102,194,0.25);
-  border-radius: 16px; padding: 3px 8px 3px 4px;
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(10,102,194,0.1); border: 1px solid rgba(10,102,194,0.3);
+  border-radius: 20px; padding: 4px 12px 4px 5px;
   text-decoration: none; flex-shrink: 0;
-  transition: background .15s, border-color .15s;
+  transition: background .15s, border-color .15s, transform .15s;
+  margin-left: 12px;
 }
-.author-chip:hover { background: rgba(10,102,194,0.2); border-color: rgba(10,102,194,0.5); }
+.author-chip:hover {
+  background: rgba(10,102,194,0.2); border-color: rgba(10,102,194,0.6);
+  transform: translateY(-1px);
+}
 .author-avatar {
-  width: 20px; height: 20px; border-radius: 50%;
+  width: 28px; height: 28px; border-radius: 50%;
   object-fit: cover; flex-shrink: 0;
+  border: 1.5px solid rgba(10,102,194,0.4);
 }
-.author-name { font-size: 11px; font-weight: 600; color: #93c5fd; white-space: nowrap; }
+.author-text {
+  display: flex; flex-direction: column; gap: 1px;
+}
+.author-built { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.author-name { font-size: 12px; font-weight: 600; color: #e2e8f0; white-space: nowrap; }
 .kpi-pct {
   font-size: 9px; font-weight: 700; padding: 1px 4px;
   border-radius: 6px; background: rgba(255,255,255,0.06);
