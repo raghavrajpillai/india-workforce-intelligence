@@ -9,8 +9,6 @@ interface Props {
   activeDivisions: string[]; onToggleDivision: (c: string) => void;
   activeRisk: string[]; onToggleRisk: (r: string) => void;
   activeTax: string[]; onToggleTax: (t: string) => void;
-  formality: string; onFormality: (f: string) => void;
-  minWorkforce: number; onMinWorkforce: (v: number) => void;
   divisions: Division[];
 }
 
@@ -99,34 +97,6 @@ export default function Controls(p: Props) {
           {t.label}
         </button>
       ))}
-
-      <div className="controls-sep" />
-
-      {/* Formality */}
-      <span className="filter-label">Formal:</span>
-      {[
-        { k: 'all', l: 'All' },
-        { k: 'formal', l: '≥50%' },
-        { k: 'informal', l: '<50%' },
-      ].map(f => (
-        <button
-          key={f.k}
-          className={`chip${p.formality === f.k ? ' active' : ''}`}
-          onClick={() => p.onFormality(f.k)}
-        >
-          {f.l}
-        </button>
-      ))}
-
-      <div className="controls-sep" />
-
-      {/* Min workforce */}
-      <div className="range-wrap">
-        <span>Min:</span>
-        <input type="range" min={0} max={30} step={1} value={p.minWorkforce}
-          onChange={e => p.onMinWorkforce(Number(e.target.value))} />
-        <span>≥{p.minWorkforce}M</span>
-      </div>
 
     </div>
   );

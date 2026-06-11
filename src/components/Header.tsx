@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { DatasetMetadata } from '../types/occupation';
 import { formatWorkforce } from '../utils/format';
 
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export default function Header({ metadata, totalShown, highAiCount, fiscalSummary, hasActiveFilters, activeStateName }: Props) {
+  const navigate = useNavigate();
   const { directTax, indirect, nonContrib, total } = fiscalSummary;
 
   const directPct = total > 0 ? Math.round((directTax / total) * 100) : 0;
@@ -75,10 +77,14 @@ export default function Header({ metadata, totalShown, highAiCount, fiscalSummar
           </div>
         </div>
 
-        {/* Export buttons stacked top-right */}
-        <div className="header-export-stack">
-          <button className="header-export-btn" id="header-export-json">⬇ JSON</button>
-          <button className="header-export-btn header-export-pdf" id="header-export-pdf">⬇ PDF</button>
+        {/* Title + back — far right */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0, marginLeft: 'auto', paddingLeft: 16 }}>
+          <span style={{ fontSize: 11, color: '#64748b', letterSpacing: '.04em', whiteSpace: 'nowrap', fontWeight: 500 }}>
+            India AI Workforce Intelligence
+          </span>
+          <button className="explore-back-btn" onClick={() => navigate('/')} style={{ fontSize: 11, padding: '3px 10px' }}>
+            ← Back to Home
+          </button>
         </div>
       </div>
 
