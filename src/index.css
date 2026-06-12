@@ -547,6 +547,18 @@ html, body { height: 100vh; overflow: hidden; }
 .btn-ghost:hover { background: rgba(237,241,255,.06); border-color: rgba(237,241,255,.42); }
 .inline-link { background: none; border: none; color: #4D7D94; font-weight: 600; cursor: pointer; text-decoration: underline; font-size: inherit; padding: 0; font-family: 'DM Sans', system-ui, sans-serif; }
 
+/* ── LEGAL DISCLAIMER BAR ── */
+.site-disclaimer {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+  background: rgba(7,10,24,.97);
+  border-top: 1px solid rgba(237,241,255,.06);
+  padding: 5px 44px;
+  font-size: 10px; line-height: 1.55;
+  color: rgba(237,241,255,.22);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  letter-spacing: .01em;
+}
+
 /* ── 3 KPIs ── */
 .hp-kpis-section { padding: 100px 0; background: #0f1629; }
 .hp-kpis-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
