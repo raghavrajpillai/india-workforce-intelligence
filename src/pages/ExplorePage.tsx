@@ -58,7 +58,7 @@ export default function ExplorePage() {
     activeState !== null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 30px)', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
       <div className="app" style={{ flex: 1, minHeight: 0 }}>
         <Header
           metadata={metaWithCount}
